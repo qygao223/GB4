@@ -1,6 +1,4 @@
-%This code detects commands ["UP" OR "DOWN"] using streaming audio from microphone.
-% put in in commandRecognition
-
+%This code detects commands ["UP" OR "DOWN"] using streaming audio from microphone. 
 %clear c1;
 %c1 = arduino('COM18', 'Uno');
 load('commandNet.mat') %loads the pretrained network
@@ -69,19 +67,20 @@ while ishandle(h) && toc < timeLimit
 
     if YMode == "background" || count < countThreshold || maxProb < probThreshold
         title("",'FontSize',20)
-        if strcmp(pulse,'1010') || strcmp(pulse,'1100')
-            i = i+1;
-            % replace by controlspray(pulse)
-            disp([pulse,i])
-            pause(0.3);
-            %
-            pulse = "0000";
-        else
-        end        
+        if YMode == "background"
+            if strcmp(pulse,'1010') || strcmp(pulse,'1100')
+                i = i+1;
+                disp([pulse,i])
+                pause(0.3);
+                pulse = "0000";
+            else
+            end
+        end    
     else
         title(string(YMode),'FontSize',20)
         pulse = ookmodulation(YMode);
     end
+    
     %fprintf('%d\n', YMode);
     drawnow
 end
@@ -106,7 +105,7 @@ function key = encoderPWM(input)
 end
 
 function controlspray(bit)
-    if strcmp(bit,'1010')
+    if bit == 1
         writeDigitalPin(c1, 'D9', 1);
         pause(0.1);
         writeDigitalPin(c1, 'D9', 0);
@@ -114,7 +113,7 @@ function controlspray(bit)
         writeDigitalPin(c1, 'D9', 1);
         pause(0.1);
         writeDigitalPin(c1, 'D9', 0);
-    elseif strcmp(bit,'1100')
+    elseif bit == 0
         writeDigitalPin(c1, 'D9', 1);
         pause(0.1);
         writeDigitalPin(c1, 'D9', 0);
@@ -124,3 +123,4 @@ function controlspray(bit)
         writeDigitalPin(c1, 'D9', 0);
     end
 end
+
