@@ -1,24 +1,24 @@
 clear
 clc
 clf
-a = arduino('COM4','Uno');
+a = arduino('COM19','Uno');
 
 %change the words to change the plot title and saved file name, change
 %every time you adjust distance and concentration.
-title_words = 'Sensor Voltage - 100%, 30cm';
+title_words = 'Sensor Voltage - 100%, 80cm';
 
 h = animatedline;
 ax = gca;
 xlabel('Time(sec)');
 ylabel('Voltage(V)');
 title(title_words);
-ax.YLim = [0 5.2];
+ax.YLim = [0 3];
 grid on;
 startTime = datetime('now');
 time = 0.0;
 
 %change the run time so you can see the whole impulse response
-run_time = 60.0;
+run_time = 30.0;
 
 % the following two arrays get saved as a matlab matrix file to your
 % computer every time you run the program

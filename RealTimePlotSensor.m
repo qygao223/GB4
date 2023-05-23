@@ -1,7 +1,7 @@
 clear
 clc
 clf
-a = arduino('COM4','Uno');
+a = arduino('COM19','Uno');
 
 title_words = 'Real-Time Plot';
 

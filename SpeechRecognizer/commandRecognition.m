@@ -78,13 +78,13 @@ while ishandle(h) && toc < timeLimit
         end        
     else
         title(string(YMode),'FontSize',20)
-        pulse = ookmodulation(YMode);
+        pulse = encoderPWM(YMode);
     end
     %fprintf('%d\n', YMode);
     drawnow
 end
 
-function key = ookmodulation(input)
+function key = encoderPWM(input)
     if string(input) == "up"
         key = "1010";
     elseif string(input) == "down"
@@ -94,7 +94,7 @@ function key = ookmodulation(input)
     end    
 end
 
-function key = encoderPWM(input)
+function key = ookmodulation(input)
     if string(input) == "up"
         key = "1";
     elseif string(input) == "down"
