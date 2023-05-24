@@ -124,8 +124,7 @@ function PWMcontrolspray(c1,bit)
     end
 end
 
-function OOKcontrolspray(c1,bit) % spary when up, no spray when down
-% need synchronise, need recognition output every symbol time period
+function OOKcontrolspray(c1,bit) % spary w
     if strcmp(bit,'1010')
         writeDigitalPin(c1, 'D9', 1);
         pause(0.03);
