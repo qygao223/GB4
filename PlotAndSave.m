@@ -4,7 +4,6 @@ clf
 a = arduino('COM19','Uno');
 % PWM
 rise_flag = false;
-t=0;
 %OOK
 start=tic;
 get_result = false;
@@ -17,7 +16,7 @@ ax = gca;
 xlabel('Time(sec)');
 ylabel('Voltage(V)');
 title(title_words);
-ax.YLim = [0 3];
+ax.YLim = [0 5];
 grid on;
 startTime = datetime('now');
 time = 0.0;
@@ -51,33 +50,37 @@ end
 matrix100_30 = [t_array;sensor_data];
 save(title_words, 'matrix100_30')
 plot(t_array,sensor_data)
-ylim([0 3])
+ylim([0 5])
 f = gcf;
 title_file = append(title_words,'.png');
 exportgraphics(f,title_file,'Resolution',300)
 
 function result=detectionPWM(input)
     global rise_flag;
-    global t;
-    if ~rise_flag && input > 0.75
-        t = tic;
-        disp(toc(t))
+    global start_time;
+    % before rise detected
+    if ~rise_flag && input > 1
+        start_time = tic;
+        disp(toc(start_time))
         rise_flag = true;
-    elseif input > 0.75 && rise_flag
-        if toc(t) > 5 && toc(t) <=6 %rise time period
-            if input > 1.33
+    % after rise detected, find if up or down
+    elseif input > 1 && rise_flag
+        now_time=tic;
+        if toc(now_time)-toc(start_time) ==2 %within rise time period
+            if input > 2.7
                 % Set HIGH output
                 result="up";
                 % Replace with your code to output a HIGH signal to the Arduino
-            elseif input > 0.75 && input <= 1.1
+            elseif input > 1 && input <= 2
                 % Set LOW output
                 result="down";
                 % Replace with your code to output a LOW signal to the Arduino
             end
-            fprintf([result, floor(toc(t))]);
-        elseif toc(t) >20 %fall time
+            fprintf([result, toc(now_time)]);
+        % enough time for spary to recover, ready for next detection
+        elseif toc(now_time)-toc(start_time) >20 %fall time
             rise_flag=false;
-            t=0;
+            start_time=0;
         end
     else
         t=0;
@@ -89,8 +92,8 @@ function result=detectionook(input)
     now=tic;
     interval=toc(now)-toc(start);
     if mod(floor(interval) /20)==0
-        if mod(floor(interval)/5) >=0 && mod(floor(interval)/5)<=1 && get_result == false
-            if input > 0.7
+        if mod(floor(interval)/5) ==0 && get_result == false
+            if input > 1
                 result="up";
             else
                 result="down";
