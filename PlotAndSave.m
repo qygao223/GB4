@@ -55,7 +55,7 @@ f = gcf;
 title_file = append(title_words,'.png');
 exportgraphics(f,title_file,'Resolution',300)
 
-function result=detectionPWM(input)
+function [key, result]=detectionPWM(input)
     global rise_flag;
     global start_time;
     % before rise detected
@@ -70,13 +70,15 @@ function result=detectionPWM(input)
             if input > 2.7
                 % Set HIGH output
                 result="up";
+                key = "1010";
                 % Replace with your code to output a HIGH signal to the Arduino
             elseif input > 1 && input <= 2
                 % Set LOW output
                 result="down";
+                key = "1100";
                 % Replace with your code to output a LOW signal to the Arduino
             end
-            fprintf([result, toc(now_time)]);
+            fprintf([key, result, toc(now_time)]);
         % enough time for spary to recover, ready for next detection
         elseif toc(now_time)-toc(start_time) >20 %fall time
             rise_flag=false;
@@ -91,7 +93,7 @@ function result=detectionook(input)
     global get_result
     now=tic;
     interval=toc(now)-toc(start);
-    if mod(floor(interval) /20)==0
+    if mod(floor(interval) /20)>0
         if mod(floor(interval)/5) ==0 && get_result == false
             if input > 1
                 result="up";
@@ -103,5 +105,13 @@ function result=detectionook(input)
         end
     else
         get_result = false;
+    end
+end
+
+function controlDrone(c1,bit)
+    if strcmp(bit,'1010')
+        writeDigitalPin(c1, 'D10', 1);
+    elseif strcmp(bit,'1100')
+        writeDigitalPin(c1, 'D10', 0);
     end
 end
